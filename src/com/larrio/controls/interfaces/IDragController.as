@@ -7,13 +7,7 @@ package com.larrio.controls.interfaces
 	 * @createTime	2010/2/22 21:24
 	 */
 	public interface IDragController 
-	{
-		/**
-		 * 速度缩放因子
-		 */
-		function get scale():Number;
-		function set scale(value:Number):void;
-		
+	{		
 		/**
 		 * 速度感应临界值
 		 */

@@ -97,16 +97,6 @@ package com.larrio.controls.layout
 		}	
 		
 		/**
-		 * 速度放缩因子
-		 * @default 100
-		 */
-		public function get scale():Number { return _drag.scale.x; }
-		public function set scale(value:Number):void 
-		{
-			_drag.scale.x = value;
-		}
-		
-		/**
 		 * 拖动后停止所需要的时间
 		 * @default 0.5
 		 */

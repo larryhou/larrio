@@ -94,16 +94,6 @@ package com.larrio.controls.layout
 			
 			this.value = targetValue;
 			dispatchEvent(new Event(Event.CHANGE));
-		}	
-		
-		/**
-		 * 速度放缩因子
-		 * @default 100
-		 */
-		public function get scale():Number { return _drag.scale.y; }
-		public function set scale(value:Number):void 
-		{
-			_drag.scale.y = value;
 		}
 		
 		/**

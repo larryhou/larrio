@@ -1,4 +1,4 @@
-package com.larrio.controls 
+package com.larrio.controls
 {
 	import com.greensock.TweenLite;
 	import com.larrio.controls.events.DragEvent;
@@ -19,21 +19,21 @@ package com.larrio.controls
 	/**
 	 * 开始拖动时派发
 	 */
-	[Event(name = "startDrag", type = "com.larrio.controls.events.DragEvent")]
+	[Event(name = "startDrag", type = "com.qzone.corelib.controls.events.DragEvent")]
 	
 	/**
 	 * 停止拖动时派发
 	 */
-	[Event(name = "stopDrag", type = "com.larrio.controls.events.DragEvent")]
+	[Event(name = "stopDrag", type = "com.qzone.corelib.controls.events.DragEvent")]
 	
 	/**
 	 * 单次滚动完成时派发
 	 */
-	[Event(name = "dragComplete", type = "com.larrio.controls.events.DragEvent")]
+	[Event(name = "dragComplete", type = "com.qzone.corelib.controls.events.DragEvent")]
 
 	/**
 	 * 拖拽增强控件
-	 * @author larryhou
+	 * @author Larry H.
 	 */
 	public class DragHelper extends EventDispatcher implements IController
 	{
@@ -45,7 +45,6 @@ package com.larrio.controls
 		private var _duration:Number = 0.5;
 		
 		// 包含横竖两个方向
-		private var _scale:Point;
 		private var _threshold:Point;
 		
 		// 位置相关
@@ -60,6 +59,7 @@ package com.larrio.controls
 		// 是否激活控件
 		private var _enabled:Boolean;
 		
+		private var _updateTime:int;
 		private var _tweenMode:Boolean = true;
 		
 		/**
@@ -81,9 +81,7 @@ package com.larrio.controls
 			_position = new Point();
 			
 			_speed = new Point();
-			
-			_scale = new Point(100, 100);
-			_threshold = new Point(0.2, 0.2);
+			_threshold = new Point(0.0, 0.0);
 		}
 		
 		/**
@@ -124,10 +122,9 @@ package com.larrio.controls
 			_position.y = _origin.y;
 			
 			_time = getTimer();
+			_target.addEventListener(Event.ENTER_FRAME, frameHandler);
 			
 			dispatchEvent(new DragEvent(DragEvent.START_DRAG));
-			
-			_target.addEventListener(Event.ENTER_FRAME, frameHandler);
 		}
 		
 		/**
@@ -141,20 +138,16 @@ package com.larrio.controls
 			_target.removeEventListener(Event.ENTER_FRAME, frameHandler);
 			
 			_time = getTimer() - _time;
-			
 			_speed.x = (_position.x - _origin.x) / _time;
 			_speed.y = (_position.y - _origin.y) / _time;
 			
 			if (Math.abs(_speed.x) < _threshold.x)_speed.x = 0;
 			if (Math.abs(_speed.y) < _threshold.y)_speed.y = 0;
 			
-			_speed.x *= _scale.x;
-			_speed.y *= _scale.y;
-			
 			dispatchEvent(new DragEvent(DragEvent.STOP_DRAG));
-			
 			if ((Math.abs(_speed.x) > 0 || Math.abs(_speed.y) > 0) && _tweenMode)
 			{
+				_updateTime = getTimer();
 				TweenLite.to(_speed, _duration, { x:0, y:0, ease:_ease, onComplete:complete, onUpdate:updateHandler }); return;
 			}
 			
@@ -166,12 +159,16 @@ package com.larrio.controls
 		 */
 		private function updateHandler():void
 		{
-			_position.x += _speed.x;
-			_position.y += _speed.y;
+			var current:int = getTimer();
+			var delta:int = current - _updateTime;
+			
+			_position.x += _speed.x * delta;
+			_position.y += _speed.y * delta;
 			
 			_offset.x = _position.x - _origin.x;
 			_offset.y = _position.y - _origin.y;
 			
+			_updateTime = current;
 			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
@@ -196,16 +193,6 @@ package com.larrio.controls
 		private function complete():void
 		{
 			dispatchEvent(new DragEvent(DragEvent.DRAG_COMPLETE));
-		}
-		
-		/**
-		 * 速度放缩因子
-		 * @default 100
-		 */
-		public function get scale():Point { return _scale; }
-		public function set scale(value:Point):void 
-		{
-			_scale = value;
 		}
 		
 		/**
