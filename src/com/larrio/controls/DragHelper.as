@@ -81,7 +81,7 @@ package com.larrio.controls
 			_position = new Point();
 			
 			_speed = new Point();
-			_threshold = new Point(0.0, 0.0);
+			_threshold = new Point(1.0, 1.0);
 		}
 		
 		/**
