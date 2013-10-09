@@ -65,6 +65,13 @@ package
 					_layout.layout.rowCount--;
 					break;
 				}
+					
+				case Keyboard.SPACE:
+				{
+					_layout.layout.vgap += 5;
+					_layout.layout.hgap += 5;
+					break;
+				}
 			}
 		}
 	}
