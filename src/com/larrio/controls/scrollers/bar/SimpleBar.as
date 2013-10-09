@@ -1,7 +1,7 @@
-package com.larrio.controls.dragbar 
+package com.larrio.controls.scrollers.bar 
 {
 	import com.larrio.controls.events.MoveEvent;
-	import com.larrio.controls.interfaces.IController;
+	import com.larrio.controls.interfaces.IComponent;
 	
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
@@ -33,7 +33,7 @@ package com.larrio.controls.dragbar
 	 * @author larryhou
 	 * @createTime	2010/2/28 23:29
 	 */
-	public class SimpleBar extends EventDispatcher implements IController
+	public class SimpleBar extends EventDispatcher implements IComponent
 	{
 		//////////////////////////////////////////////////////////////////////////
 		// static members
@@ -63,19 +63,14 @@ package com.larrio.controls.dragbar
 			
 			_minWidth = _view.width;
 			
-			recordFrames();
-		}
-		
-		/**
-		 * 记录帧标签
-		 */
-		private function recordFrames():void 
-		{
 			_map = new Dictionary();
 			var scene:Scene = _view.scenes[0];
 			for each(var label:FrameLabel in scene.labels)
 			{
-				_map[label.name] = label.frame;
+				if (label.name)
+				{
+					_map[label.name] = label;
+				}
 			}
 		}
 		
@@ -112,7 +107,10 @@ package com.larrio.controls.dragbar
 		 */
 		protected function outHandler(e:MouseEvent):void 
 		{
-			_view.gotoAndStop(ROLL_OUT);
+			if (_map[ROLL_OUT])
+			{
+				_view.gotoAndStop(ROLL_OUT);
+			}
 		}
 		
 		/**
@@ -121,7 +119,10 @@ package com.larrio.controls.dragbar
 		 */
 		protected function overHandler(e:MouseEvent):void 
 		{
-			_view.gotoAndStop(ROLL_OVER);
+			if (_map[ROLL_OVER])
+			{
+				_view.gotoAndStop(ROLL_OVER);
+			}
 		}
 		
 		/**
@@ -131,7 +132,10 @@ package com.larrio.controls.dragbar
 		protected function downHandler(e:MouseEvent):void 
 		{
 			_view.stage.addEventListener(MouseEvent.MOUSE_UP, upHandler);
-			if (_map[MOUSE_DOWN]) _view.gotoAndStop(MOUSE_DOWN);
+			if (_map[MOUSE_DOWN]) 
+			{
+				_view.gotoAndStop(MOUSE_DOWN);
+			}
 			
 			_view.startDrag(false, _dragRect);
 			_view.addEventListener(Event.ENTER_FRAME, frameHandler);
@@ -162,13 +166,19 @@ package com.larrio.controls.dragbar
 			
 			if (_view.contains(target))
 			{
-				_view.gotoAndStop(ROLL_OVER);
+				if (_map[ROLL_OVER])
+				{
+					_view.gotoAndStop(ROLL_OVER);
+				}
 				
 				dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 			}
 			else
 			{
-				_view.gotoAndStop(ROLL_OUT);
+				if (_map[ROLL_OUT])
+				{
+					_view.gotoAndStop(ROLL_OUT);
+				}
 				
 				dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
 			}

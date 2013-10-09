@@ -2,7 +2,7 @@ package com.larrio.controls
 {
 	import com.greensock.TweenLite;
 	import com.larrio.controls.events.DragEvent;
-	import com.larrio.controls.interfaces.IController;
+	import com.larrio.controls.interfaces.IComponent;
 	
 	import flash.display.InteractiveObject;
 	import flash.events.Event;
@@ -35,7 +35,7 @@ package com.larrio.controls
 	 * 拖拽增强控件
 	 * @author Larry H.
 	 */
-	public class DragHelper extends EventDispatcher implements IController
+	public class DragHelper extends EventDispatcher implements IComponent
 	{
 		// 被拖动物体
 		private var _target:InteractiveObject;

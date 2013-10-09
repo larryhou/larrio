@@ -1,23 +1,23 @@
-package com.larrio.controls.layout
+package com.larrio.controls.layouts
 {
-	import com.larrio.controls.wrappers.RendererWrapper;
+	import com.larrio.controls.wrappers.RenderWrapper;
 	
 	/**
 	 * 水平方向矩阵列表布局控制类
 	 * @author larryhou
 	 */
-	public class HLayout extends BasicLayout
+	public class HorzontalScrollLayout extends ScrollLayout
 	{	
 		
 		/**
 		 * 构造函数
-		 * create a [HLayout] object
+		 * create a [HorzontalScrollLayout] object
 		 * @param	rowCount		每页显示的行数
 		 * @param	columnCount		每页显示的列数
 		 * @param	horizontalGap	水平方向间隔
 		 * @param	verticalGap		垂直方向间隔
 		 */
-		public function HLayout(rowCount:int, columnCount:int = 1, horizontalGap:Number = 5, verticalGap:Number = 5)
+		public function HorzontalScrollLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
 		{			
 			super(rowCount, columnCount, horizontalGap, verticalGap);
 			
@@ -27,7 +27,7 @@ package com.larrio.controls.layout
 		/**
 		 * 滚动渲染
 		 */
-		override protected function startRenderer():void
+		override protected function scrollingRender():void
 		{		
 			// 开始渲染	
 			var position:Number = _value * (_lineCount - _columnCount) * (_itemWidth + _horizontalGap) / 100;
@@ -47,62 +47,60 @@ package com.larrio.controls.layout
 			
 			_lineIndex = columnIndex;
 			
-			adjustItemViewOrder(scrollingRight);
+			swapItemOrder(scrollingRight);
 		}
 		
 		/**
 		 * 调整试图顺序
 		 */
-		override protected function adjustItemViewOrder(scrollingRight:Boolean):void
+		override protected function swapItemOrder(scrollingRight:Boolean):void
 		{
 			var index:int = 0;
 			
-			var firstItem:RendererWrapper = null;
-			var lastItem:RendererWrapper = null;
+			var firstItem:RenderWrapper = null;
+			var lastItem:RenderWrapper = null;
 			
 			if (scrollingRight)
 			{
 				for (index = 0; index < _rowCount; index++)
 				{
-					firstItem = _itemList[0];
-					lastItem = _itemList.pop() as RendererWrapper;
+					firstItem = _items[0];
+					lastItem = _items.pop() as RenderWrapper;
 					lastItem.x = firstItem.x - _itemWidth - _horizontalGap;
 					
 					lastItem.scrolling = _scrolling;
 					lastItem.dataIndex = firstItem.dataIndex - 1;
 					lastItem.data = _dataProvider[lastItem.dataIndex];
 					
-					_itemList.unshift(lastItem);
+					_items.unshift(lastItem);
 				}
 			}
 			else
 			{
 				for (index = 0; index < _rowCount; index++)
 				{
-					lastItem = _itemList[_itemList.length - 1];
-					firstItem = _itemList.shift() as RendererWrapper;
+					lastItem = _items[_items.length - 1];
+					firstItem = _items.shift() as RenderWrapper;
 					firstItem.x = lastItem.x + _itemWidth + _horizontalGap;
 					
 					firstItem.scrolling = _scrolling;
 					firstItem.dataIndex = lastItem.dataIndex + 1;
 					firstItem.data = _dataProvider[firstItem.dataIndex];
 					
-					_itemList.push(firstItem);
+					_items.push(firstItem);
 				}
 			}
 			
-			super.adjustItemViewOrder(scrollingRight);
+			super.swapItemOrder(scrollingRight);
 		}
 		
 		/**
 		 * 刷新显示
 		 */
-		override protected function refreshDisplay():void
+		override protected function layoutUpdate():void
 		{
-			var viewIndex:int = 0;
-			var dataIndex:int = 0;
-			var data:Object = null;
-			var item:RendererWrapper = null;
+			var index:int, dataIndex:int;
+			var data:Object, item:RenderWrapper;
 			
 			if (_lineIndex == 0)
 			{
@@ -113,10 +111,10 @@ package com.larrio.controls.layout
 			{
 				for (var j:int = 0; j < _rowCount; j++)
 				{
-					item = _itemList[viewIndex];
+					item = _items[index];
 					dataIndex = i * _rowCount + j;
 					
-					item.index = viewIndex;
+					item.index = index;
 					data = _dataProvider[dataIndex];
 					
 					if (_forceUpdate)
@@ -142,7 +140,7 @@ package com.larrio.controls.layout
 					
 					item.y = j * item.height + j * _verticalGap;
 					item.x = i * item.width + i * _horizontalGap;
-					viewIndex ++;
+					index ++;
 				}
 			}
 			
@@ -172,8 +170,6 @@ package com.larrio.controls.layout
 		override public function set dataProvider(value:Array):void 
 		{
 			super.dataProvider = value;
-			
-			_allowSameValue = true;
 			this.value = 100 * (_lineIndex--) / (_lineCount - _columnCount);
 		}
 	}

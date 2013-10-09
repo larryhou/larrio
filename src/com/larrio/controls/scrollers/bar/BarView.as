@@ -1,4 +1,4 @@
-package com.larrio.controls.dragbar 
+package com.larrio.controls.scrollers.bar 
 {
 	import flash.display.Graphics;
 	import flash.display.MovieClip;

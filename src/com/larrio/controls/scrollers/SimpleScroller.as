@@ -65,7 +65,7 @@ package com.larrio.controls.scrollers
 		/**
 		 * 添加事件侦听
 		 */
-		private function addListener():void
+		private function listen():void
 		{
 			_preBtn.mouseEnabled = _nextBtn.mouseEnabled = true;
 			_preBtn.addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
@@ -75,7 +75,7 @@ package com.larrio.controls.scrollers
 		/**
 		 * 移除事件侦听
 		 */
-		private function removeListener():void
+		private function unlisten():void
 		{
 			_preBtn.mouseEnabled = _nextBtn.mouseEnabled = false;
 			_preBtn.removeEventListener(MouseEvent.MOUSE_DOWN, downHandler);
@@ -157,12 +157,6 @@ package com.larrio.controls.scrollers
 			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
-		/**
-		 * 已废弃
-		 * @private
-		 */
-		public function setCurrentLineCount(value:int):void { }
-		
 		// getter & setter
 		//*************************************************
 		/**
@@ -182,7 +176,7 @@ package com.larrio.controls.scrollers
 		public function set enabled(value:Boolean):void 
 		{
 			_enabled = value;
-			_enabled? addListener() : removeListener();
+			_enabled? listen() : unlisten();
 		}
 		
 		/**

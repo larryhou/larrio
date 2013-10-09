@@ -6,7 +6,7 @@ package com.larrio.controls.interfaces
 	 * @author larryhou
 	 * @createTime	2010/2/22 21:24
 	 */
-	public interface IDragController 
+	public interface IDragComponent 
 	{		
 		/**
 		 * 速度感应临界值

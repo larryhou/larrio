@@ -1,9 +1,9 @@
-package com.larrio.controls.layout 
+package com.larrio.controls.layouts 
 {
 	import com.larrio.controls.DragHelper;
 	import com.larrio.controls.events.DragEvent;
 	import com.larrio.controls.events.ScrollEvent;
-	import com.larrio.controls.interfaces.IDragController;
+	import com.larrio.controls.interfaces.IDragComponent;
 	
 	import flash.events.Event;
 	
@@ -12,7 +12,7 @@ package com.larrio.controls.layout
 	 * @author larryhou
 	 * @createTime	2010/2/14 22:59
 	 */
-	public class VDragLayout extends VLayout implements IDragController
+	public class VirticalDragLayout extends VirticalScrollLayout implements IDragComponent
 	{		
 		private var _drag:DragHelper = null;
 		
@@ -20,9 +20,9 @@ package com.larrio.controls.layout
 		
 		/**
 		 * 构造函数
-		 * create a [VDragLayout] object
+		 * create a [VirticalDragLayout] object
 		 */
-		public function VDragLayout(rowCount:int, columnCount:int = 1, horizontalGap:Number = 5, verticalGap:Number = 5)
+		public function VirticalDragLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
 		{
 			super(rowCount, columnCount, horizontalGap, verticalGap);
 			
@@ -32,7 +32,7 @@ package com.larrio.controls.layout
 		/**
 		 * 添加事件侦听
 		 */
-		override protected function addListener():void 
+		override protected function listen():void 
 		{
 			_drag.addEventListener(Event.CHANGE, updateHandler);
 			_drag.addEventListener(DragEvent.START_DRAG, startDragHandler);
@@ -42,7 +42,7 @@ package com.larrio.controls.layout
 		/**
 		 * 移除事件侦听
 		 */
-		override protected function removeListener():void 
+		override protected function unlisten():void 
 		{
 			_drag.removeEventListener(Event.CHANGE, updateHandler);
 			_drag.removeEventListener(DragEvent.START_DRAG, startDragHandler);

@@ -6,7 +6,7 @@ package com.larrio.controls.interfaces
 	 * 控制器接口
 	 * @author larryhou
 	 */
-	public interface IController extends IEventDispatcher
+	public interface IComponent extends IEventDispatcher
 	{
 		/**
 		 * 是否激活控件

@@ -1,9 +1,9 @@
 package com.larrio.controls.wrappers 
 {
 	import com.larrio.controls.events.ScrollEvent;
-	import com.larrio.controls.interfaces.IController;
+	import com.larrio.controls.interfaces.IComponent;
 	import com.larrio.controls.interfaces.IScroller;
-	import com.larrio.controls.layout.BasicLayout;
+	import com.larrio.controls.layouts.ScrollLayout;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -12,11 +12,11 @@ package com.larrio.controls.wrappers
 	 * 滚动布局类
 	 * @author larryhou
 	 */
-	public class LayoutWrapper extends EventDispatcher implements IController
+	public class LayoutWrapper extends EventDispatcher implements IComponent
 	{
 		private var _scroller:IScroller = null;
 		
-		private var _layout:BasicLayout = null;
+		private var _layout:ScrollLayout = null;
 		
 		private var _enabled:Boolean = false;
 		
@@ -26,7 +26,7 @@ package com.larrio.controls.wrappers
 		 * 构造函数
 		 * create a [LayoutWrapper] object
 		 */
-		public function LayoutWrapper(layout:BasicLayout, scroller:IScroller)
+		public function LayoutWrapper(layout:ScrollLayout, scroller:IScroller)
 		{
 			_layout = layout;
 			_scroller = scroller;
@@ -59,7 +59,7 @@ package com.larrio.controls.wrappers
 		/**
 		 * 添加事件侦听
 		 */
-		private function addListener():void
+		private function listen():void
 		{
 			_layout.addEventListener(Event.CHANGE, layoutChangeHandler);
 			
@@ -71,7 +71,7 @@ package com.larrio.controls.wrappers
 		/**
 		 * 移除事件侦听
 		 */
-		private function removeListener():void
+		private function unlisten():void
 		{
 			_layout.removeEventListener(Event.CHANGE, layoutChangeHandler);
 			
@@ -138,7 +138,7 @@ package com.larrio.controls.wrappers
 			_layout.enabled = _enabled;
 			_scroller.enabled = _enabled;
 			
-			_enabled ? addListener() : removeListener();
+			_enabled ? listen() : unlisten();
 		}
 		
 		/**
@@ -165,7 +165,7 @@ package com.larrio.controls.wrappers
 		/**
 		 * 布局类
 		 */
-		public function get layout():BasicLayout { return _layout; }
+		public function get layout():ScrollLayout { return _layout; }
 		
 		/**
 		 * 滚动控制器

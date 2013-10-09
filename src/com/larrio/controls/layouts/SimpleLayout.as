@@ -1,6 +1,6 @@
-package com.larrio.controls.layout
+package com.larrio.controls.layouts
 {
-	import com.larrio.controls.interfaces.IRenderer;
+	import com.larrio.controls.interfaces.IRender;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -98,7 +98,7 @@ package com.larrio.controls.layout
 					}
 					
 					addChild(item = _items[index]);
-					(item as IRenderer).data = _dataProvider[index];
+					(item as IRender).data = _dataProvider[index];
 					
 					item.x = posX;
 					item.y = posY;
@@ -140,10 +140,10 @@ package com.larrio.controls.layout
 		 * 获取渲染器项目
 		 * @param	index	渲染器对象位置
 		 */
-		public function getItemAt(index:uint):IRenderer
+		public function getItemAt(index:uint):IRender
 		{
 			if (!_items || index >= _items.length) return null;
-			return _items[index] as IRenderer;
+			return _items[index] as IRender;
 		}
 		
 		// getter & setter

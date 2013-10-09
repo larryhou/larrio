@@ -1,7 +1,7 @@
-package com.larrio.controls.layout 
+package com.larrio.controls.layouts 
 {	
-	import com.larrio.controls.interfaces.IController;
-	import com.larrio.controls.wrappers.RendererWrapper;
+	import com.larrio.controls.interfaces.IComponent;
+	import com.larrio.controls.wrappers.RenderWrapper;
 	
 	import flash.display.Graphics;
 	import flash.display.Sprite;
@@ -26,7 +26,7 @@ package com.larrio.controls.layout
 	 * 滚动列表基类
 	 * @author larryhou
 	 */
-	public class BasicLayout extends Sprite implements IController
+	public class ScrollLayout extends Sprite implements IComponent
 	{
 		protected var _container:Sprite = null;
 		
@@ -38,13 +38,13 @@ package com.larrio.controls.layout
 		protected var _dataProvider:Array;
 		protected var _itemRenderClass:Class;
 		
-		protected var _itemList:Array = null;
+		protected var _items:Array = null;
 		
 		protected var _lineIndex:int = 0;
 		protected var _lineCount:int = 0;
 		
-		protected var _verticalGap:Number;
-		protected var _horizontalGap:Number;
+		protected var _verticalGap:int;
+		protected var _horizontalGap:int;
 		
 		protected var _itemWidth:Number;
 		protected var _itemHeight:Number;
@@ -59,17 +59,16 @@ package com.larrio.controls.layout
 		protected var _horizontalMode:Boolean = false;
 		
 		protected var _scrollRect:Rectangle;
-		protected var _allowSameValue:Boolean = false;
 		
 		/**
 		 * 构造函数
-		 * create a [BasicLayout] object
+		 * create a [ScrollLayout] object
 		 * @param	rowCount		每页显示的行数
 		 * @param	columnCount		每页显示的列数
 		 * @param	horizontalGap	水平方向间隔
 		 * @param	verticalGap		垂直方向间隔
 		 */
-		public function BasicLayout(rowCount:int, columnCount:int = 1, horizontalGap:Number = 5, verticalGap:Number = 5)
+		public function ScrollLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
 		{	
 			_rowCount = rowCount;
 			_columnCount = columnCount;
@@ -77,11 +76,7 @@ package com.larrio.controls.layout
 			_horizontalGap = horizontalGap;
 			_verticalGap = verticalGap;
 			
-			_container = new Sprite();
-			_container.name = "item_renderer_container";
-			
-			addChild(_container);
-			this.name = "layout_contrainer";
+			addChild(_container = new Sprite());
 		}
 		
 		/**
@@ -89,7 +84,7 @@ package com.larrio.controls.layout
 		 */
 		protected function initView():void
 		{
-			_itemList = [];
+			_items = [];
 			
 			if (_horizontalMode)
 			{
@@ -100,12 +95,13 @@ package com.larrio.controls.layout
 				_itemCount = (_rowCount + 1) * _columnCount;
 			}
 			
-			var itemRender:RendererWrapper = null;
+			var itemRender:RenderWrapper = null;
 			for (var i:int = 0; i < _itemCount; i++)
 			{
-				itemRender = new RendererWrapper(_itemRenderClass);
+				itemRender = new RenderWrapper(_itemRenderClass);
 				itemRender.index = i;
-				_itemList.push(itemRender);
+				
+				_items.push(itemRender);
 			}
 			
 			_itemHeight = itemRender.height;
@@ -133,7 +129,7 @@ package com.larrio.controls.layout
 		 * 滚动渲染
 		 * @notice 需要基类复写实现
 		 */
-		protected function startRenderer():void
+		protected function scrollingRender():void
 		{
 			
 		}	
@@ -142,16 +138,16 @@ package com.larrio.controls.layout
 		 * 调整试图顺序
 		 * @notice 需要基类复写实现
 		 */
-		protected function adjustItemViewOrder(scrolling:Boolean):void
+		protected function swapItemOrder(scrolling:Boolean):void
 		{
-			refreshDisplay();
+			layoutUpdate();
 		}
 		
 		/**
 		 * 刷新显示
 		 * @notice 需要基类复写实现
 		 */
-		protected function refreshDisplay():void
+		protected function layoutUpdate():void
 		{
 			
 		}
@@ -168,7 +164,7 @@ package com.larrio.controls.layout
 		/**
 		 * 添加事件侦听
 		 */
-		protected function addListener():void
+		protected function listen():void
 		{
 			
 		}
@@ -176,7 +172,7 @@ package com.larrio.controls.layout
 		/**
 		 * 移除事件侦听
 		 */
-		protected function removeListener():void
+		protected function unlisten():void
 		{
 			
 		}
@@ -193,7 +189,7 @@ package com.larrio.controls.layout
 		{
 			_enabled = value;
 			
-			_enabled? addListener() : removeListener();
+			_enabled? listen() : unlisten();
 		}
 		
 		/**
@@ -218,7 +214,7 @@ package com.larrio.controls.layout
 			
 			_lineIndex = Math.max(_lineIndex, 0);
 			
-			if (!_itemList)
+			if (!_items)
 			{
 				initView();
 			}
@@ -271,11 +267,11 @@ package com.larrio.controls.layout
 			if (flag)
 			{
 				_lineIndex = 0;
-				refreshDisplay();
+				layoutUpdate();
 			}
 			else
 			{
-				startRenderer();
+				scrollingRender();
 			}
 		}
 		

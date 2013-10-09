@@ -1,7 +1,7 @@
-package com.larrio.controls.layout 
+package com.larrio.controls.layouts 
 {
-	import com.larrio.controls.dragbar.BarView;
-	import com.larrio.controls.interfaces.IController;
+	import com.larrio.controls.scrollers.bar.BarView;
+	import com.larrio.controls.interfaces.IComponent;
 	import com.larrio.controls.interfaces.IScroller;
 	import com.larrio.controls.scrollers.ScrollBar;
 	
@@ -13,10 +13,10 @@ package com.larrio.controls.layout
 	 * @author larryhou
 	 * @createTime 2012/5/29 12:03
 	 */
-	public class EasyLayout extends EventDispatcher implements IController
+	public class EasyLayout extends EventDispatcher implements IComponent
 	{
 		private var _scroller:IScroller;
-		private var _layout:BasicLayout;
+		private var _layout:ScrollLayout;
 		
 		private var _enabled:Boolean;
 		private var _virtical:Boolean;
@@ -32,11 +32,11 @@ package com.larrio.controls.layout
 			
 			if (_virtical)
 			{
-				_layout = new VLayout(row, column, hgap, vgap);
+				_layout = new VirticalScrollLayout(row, column, hgap, vgap);
 			}
 			else
 			{
-				_layout = new HLayout(row, column, hgap, vgap);
+				_layout = new HorzontalScrollLayout(row, column, hgap, vgap);
 			}
 			
 			if (!_scroller) 
@@ -103,7 +103,7 @@ package com.larrio.controls.layout
 		/**
 		 * 添加事件侦听
 		 */
-		private function addListener():void
+		private function listen():void
 		{
 			_layout.addEventListener(Event.CHANGE, changeHandler);
 			_scroller.addEventListener(Event.CHANGE, changeHandler);
@@ -112,7 +112,7 @@ package com.larrio.controls.layout
 		/**
 		 * 移除事件侦听
 		 */
-		private function removeListener():void
+		private function unlisten():void
 		{
 			_layout.removeEventListener(Event.CHANGE, changeHandler);
 			_scroller.removeEventListener(Event.CHANGE, changeHandler);
@@ -148,7 +148,7 @@ package com.larrio.controls.layout
 			_layout.enabled = _enabled;
 			_scroller.enabled = _enabled;
 			
-			_enabled? addListener() : removeListener();
+			_enabled? listen() : unlisten();
 		}
 		
 		/**
@@ -171,7 +171,7 @@ package com.larrio.controls.layout
 		/**
 		 * 布局控件
 		 */
-		public function get layout():BasicLayout { return _layout; }
+		public function get layout():ScrollLayout { return _layout; }
 		
 		/**
 		 * 列表项目渲染类

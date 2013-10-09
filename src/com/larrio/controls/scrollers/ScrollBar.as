@@ -1,6 +1,6 @@
 package com.larrio.controls.scrollers 
 {
-	import com.larrio.controls.dragbar.SimpleBar;
+	import com.larrio.controls.scrollers.bar.SimpleBar;
 	import com.larrio.controls.events.MoveEvent;
 	import com.larrio.controls.events.ScrollEvent;
 	import com.larrio.controls.interfaces.IScroller;
@@ -83,15 +83,9 @@ package com.larrio.controls.scrollers
 		}
 		
 		/**
-		 * 已废弃
-		 * @private
-		 */
-		public function setCurrentLineCount(value:int):void { }
-		
-		/**
 		 * 添加时间真挺
 		 */
-		protected function addListener():void 
+		protected function listen():void 
 		{
 			_track.addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
 			
@@ -111,7 +105,7 @@ package com.larrio.controls.scrollers
 		/**
 		 * 移除事件侦听
 		 */
-		protected function removeListener():void 
+		protected function unlisten():void 
 		{
 			_track.removeEventListener(MouseEvent.MOUSE_DOWN, downHandler);
 			
@@ -368,7 +362,7 @@ package com.larrio.controls.scrollers
 		{
 			_enabled = value;
 			_bar.enabled = _enabled;
-			_enabled? addListener() : removeListener();
+			_enabled? listen() : unlisten();
 		}
 		
 		/**

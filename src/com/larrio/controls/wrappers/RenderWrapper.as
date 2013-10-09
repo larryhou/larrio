@@ -1,6 +1,6 @@
 package com.larrio.controls.wrappers
 {	
-	import com.larrio.controls.interfaces.IRenderer;
+	import com.larrio.controls.interfaces.IRender;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -9,7 +9,7 @@ package com.larrio.controls.wrappers
 	 * 列表渲染器包装器
 	 * @author larryhou
 	 */
-	public class RendererWrapper extends Sprite
+	public class RenderWrapper extends Sprite
 	{
 		private var _data:Object = null;
 		
@@ -18,16 +18,16 @@ package com.larrio.controls.wrappers
 		
 		private var _scrolling:Boolean = false;
 		
-		private var _renderer:IRenderer = null;
+		private var _renderer:IRender = null;
 		
 		/**
 		 * 构造函数
-		 * create a [RendererWrapper] object 
+		 * create a [RenderWrapper] object 
 		 * @param	RenderClass		渲染器类
 		 */
-		public function RendererWrapper(RenderClass:Class)
+		public function RenderWrapper(RenderClass:Class)
 		{
-			_renderer = new RenderClass() as IRenderer;
+			_renderer = new RenderClass() as IRender;
 			if (_renderer is DisplayObject)
 			{
 				addChild(_renderer as DisplayObject);
@@ -84,7 +84,7 @@ package com.larrio.controls.wrappers
 		/**
 		 * 渲染器实例对象
 		 */
-		public function get renderer():IRenderer { return _renderer; }
+		public function get renderer():IRender { return _renderer; }
 		
 		/**
 		 * 是否正在滚动
