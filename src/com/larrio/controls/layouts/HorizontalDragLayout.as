@@ -54,7 +54,7 @@ package com.larrio.controls.layouts
 		 */
 		private function updateHandler(e:Event):void
 		{
-			if (_lineCount <= _columnCount) return;
+			if (_lineCount <= _column) return;
 			notifyChange(_lastPosition - _drag.offset.x);
 		}
 		
@@ -85,7 +85,7 @@ package com.larrio.controls.layouts
 		 */
 		private function notifyChange(position:Number):void
 		{
-			var targetValue:Number = position * 100 / (_itemWidth + _hgap) / (_lineCount - _columnCount);
+			var targetValue:Number = position * 100 / (_itemWidth + _hgap) / (_lineCount - _column);
 			
 			if (targetValue < 0) targetValue = 0;
 			if (targetValue > 100) targetValue = 100;

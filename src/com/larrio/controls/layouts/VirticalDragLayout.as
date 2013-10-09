@@ -85,7 +85,7 @@ package com.larrio.controls.layouts
 		 */
 		private function notifyChange(position:Number):void
 		{
-			var targetValue:Number = position * 100 / (_itemHeight + _vgap) / (_lineCount - _rowCount);
+			var targetValue:Number = position * 100 / (_itemHeight + _vgap) / (_lineCount - _row);
 			
 			if (targetValue < 0) targetValue = 0;
 			if (targetValue > 100) targetValue = 100;

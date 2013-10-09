@@ -30,8 +30,8 @@ package com.larrio.controls.layouts
 	{
 		protected var _container:Sprite = null;
 		
-		protected var _rowCount:int = 5;
-		protected var _columnCount:int = 1;
+		protected var _row:int = 5;
+		protected var _column:int = 1;
 		
 		protected var _enabled:Boolean = false;
 		
@@ -70,8 +70,8 @@ package com.larrio.controls.layouts
 		 */
 		public function ScrollLayout(rowCount:int, columnCount:int = 1, hgap:int = 5, vgap:int = 5)
 		{	
-			_rowCount = rowCount;
-			_columnCount = columnCount;
+			_row = rowCount;
+			_column = columnCount;
 			
 			_hgap = hgap;
 			_vgap = vgap;
@@ -104,11 +104,11 @@ package com.larrio.controls.layouts
 			
 			if (_horizontalMode)
 			{
-				_itemCount = (_columnCount + 1) * _rowCount;
+				_itemCount = (_column + 1) * _row;
 			}
 			else
 			{
-				_itemCount = (_rowCount + 1) * _columnCount;
+				_itemCount = (_row + 1) * _column;
 			}
 			
 			_items = [];
@@ -125,8 +125,8 @@ package com.larrio.controls.layouts
 			
 			// DisplayObject.scrollRect
 			_scrollRect = new Rectangle();
-			_scrollRect.width = _columnCount * (_itemWidth + _hgap) - _hgap;
-			_scrollRect.height = _rowCount * (_itemHeight + _vgap) - _vgap;
+			_scrollRect.width = _column * (_itemWidth + _hgap) - _hgap;
+			_scrollRect.height = _row * (_itemHeight + _vgap) - _vgap;
 			
 			// 增强鼠标感应
 			graphics.clear();
@@ -227,13 +227,13 @@ package com.larrio.controls.layouts
 			
 			if (_horizontalMode)
 			{
-				_lineCount = Math.ceil(_dataProvider.length / _rowCount);
-				_lineIndex = Math.min(_lineIndex, _lineCount - _columnCount);
+				_lineCount = Math.ceil(_dataProvider.length / _row);
+				_lineIndex = Math.min(_lineIndex, _lineCount - _column);
 			}
 			else
 			{
-				_lineCount = Math.ceil(_dataProvider.length / _columnCount);
-				_lineIndex = Math.min(_lineIndex, _lineCount - _rowCount);
+				_lineCount = Math.ceil(_dataProvider.length / _column);
+				_lineIndex = Math.min(_lineIndex, _lineCount - _row);
 			}
 			
 			_lineIndex = Math.max(_lineIndex, 0);
@@ -292,11 +292,11 @@ package com.larrio.controls.layouts
 			var flag:Boolean = false;
 			if (_horizontalMode)
 			{
-				flag = (_lineCount <= _columnCount);
+				flag = (_lineCount <= _column);
 			}
 			else
 			{
-				flag = (_lineCount <= _rowCount);
+				flag = (_lineCount <= _row);
 			}
 			
 			if (flag)
@@ -341,18 +341,18 @@ package com.larrio.controls.layouts
 		/**
 		 * 列表行数
 		 */		
-		public function get rowCount():int { return _rowCount; }
-		public function set rowCount(value:int):void
+		public function get row():int { return _row; }
+		public function set row(value:int):void
 		{
-			if (value == _rowCount) return;
+			if (value == _row) return;
 			
-			var index:uint = _lineIndex * _columnCount;
+			var index:uint = _lineIndex * _column;
 			if (_horizontalMode)
 			{
-				index = _lineIndex * _rowCount;
+				index = _lineIndex * _row;
 			}
 			
-			_rowCount = value;
+			_row = value;
 			
 			resetView();
 			this.dataProvider = _dataProvider;
@@ -363,18 +363,18 @@ package com.larrio.controls.layouts
 		/**
 		 * 布局列表列数
 		 */		
-		public function get columnCount():int { return _columnCount; }
-		public function set columnCount(value:int):void
+		public function get column():int { return _column; }
+		public function set column(value:int):void
 		{
-			if (value == _columnCount) return;
+			if (value == _column) return;
 			
-			var index:uint = _lineIndex * _columnCount;
+			var index:uint = _lineIndex * _column;
 			if (_horizontalMode)
 			{
-				index = _lineIndex * _rowCount;
+				index = _lineIndex * _row;
 			}
 			
-			_columnCount = value;
+			_column = value;
 			
 			resetView();
 			this.dataProvider = _dataProvider;
@@ -389,7 +389,7 @@ package com.larrio.controls.layouts
 		public function set vgap(value:int):void
 		{
 			_vgap = value; 
-			_scrollRect.height = _rowCount * (_itemHeight + _vgap) - _vgap;
+			_scrollRect.height = _row * (_itemHeight + _vgap) - _vgap;
 			_container.scrollRect = _scrollRect;
 			
 			layoutUpdate();
@@ -402,7 +402,7 @@ package com.larrio.controls.layouts
 		public function set hgap(value:int):void
 		{
 			_hgap = value; 
-			_scrollRect.width = _columnCount * (_itemWidth + _hgap) - _hgap;
+			_scrollRect.width = _column * (_itemWidth + _hgap) - _hgap;
 			_container.scrollRect = _scrollRect;
 			
 			layoutUpdate();

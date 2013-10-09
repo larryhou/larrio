@@ -29,7 +29,7 @@ package com.larrio.controls.layouts
 		override protected function scrollingRender():void
 		{		
 			// 开始渲染
-			var position:Number = _value * (_lineCount - _rowCount) * (_itemHeight + _vgap) / 100;
+			var position:Number = _value * (_lineCount - _row) * (_itemHeight + _vgap) / 100;
 			
 			var rowIndex:Number = (position / (_itemHeight + _vgap)) >> 0;
 			
@@ -60,7 +60,7 @@ package com.larrio.controls.layouts
 			var index:int;
 			if (scrollingDown)
 			{
-				for (index = 0; index < _columnCount; index++)
+				for (index = 0; index < _column; index++)
 				{
 					firstItem = _items[0];
 					lastItem = _items.pop() as RenderWrapper;
@@ -75,7 +75,7 @@ package com.larrio.controls.layouts
 			}
 			else
 			{
-				for (index = 0; index < _columnCount; index++)
+				for (index = 0; index < _column; index++)
 				{
 					lastItem = _items[_items.length - 1];
 					firstItem = _items.shift() as RenderWrapper;
@@ -105,12 +105,12 @@ package com.larrio.controls.layouts
 				_scrollRect.y = 0; _container.scrollRect = _scrollRect;
 			}
 			
-			for (var i:int = _lineIndex; i < _lineIndex + _rowCount + 1; i++)
+			for (var i:int = _lineIndex; i < _lineIndex + _row + 1; i++)
 			{
-				for (var j:int = 0; j < _columnCount; j++)
+				for (var j:int = 0; j < _column; j++)
 				{
 					item = _items[index];
-					dataIndex = i * _columnCount + j;
+					dataIndex = i * _column + j;
 					
 					item.index = index;
 					data = _dataProvider[dataIndex];
@@ -152,14 +152,14 @@ package com.larrio.controls.layouts
 		override public function scrollTo(dataIndex:int):void 
 		{
 			if (dataIndex < 0) dataIndex = 0;
-			var lineIndex:int = Math.floor(dataIndex / _columnCount);
-			if (lineIndex > (_lineCount - _rowCount) && _lineCount > _rowCount)
+			var lineIndex:int = Math.floor(dataIndex / _column);
+			if (lineIndex > (_lineCount - _row) && _lineCount > _row)
 			{
-				lineIndex = _lineCount - _rowCount;
+				lineIndex = _lineCount - _row;
 			}
 			
 			_forceUpdate = true;
-			this.value = 100 * lineIndex / (_lineCount - _rowCount);
+			this.value = 100 * lineIndex / (_lineCount - _row);
 		}
 		
 		/**
@@ -168,7 +168,7 @@ package com.larrio.controls.layouts
 		override public function set dataProvider(value:Array):void 
 		{
 			super.dataProvider = value;
-			this.value = 100 * (_lineIndex--) / (_lineCount - _rowCount);
+			this.value = 100 * (_lineIndex--) / (_lineCount - _row);
 		}
 	}
 }

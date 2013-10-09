@@ -44,25 +44,25 @@ package
 			{
 				case Keyboard.LEFT:
 				{
-					_layout.layout.columnCount--;
+					_layout.layout.column--;
 					break;
 				}
 					
 				case Keyboard.RIGHT:
 				{
-					_layout.layout.columnCount++;
+					_layout.layout.column++;
 					break;
 				}
 					
 				case Keyboard.UP:
 				{
-					_layout.layout.rowCount++;
+					_layout.layout.row++;
 					break;
 				}
 					
 				case Keyboard.DOWN:
 				{
-					_layout.layout.rowCount--;
+					_layout.layout.row--;
 					break;
 				}
 					
