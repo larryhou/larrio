@@ -43,8 +43,8 @@ package com.larrio.controls.layouts
 		protected var _lineIndex:int = 0;
 		protected var _lineCount:int = 0;
 		
-		protected var _verticalGap:int;
-		protected var _horizontalGap:int;
+		protected var _vgap:int;
+		protected var _hgap:int;
 		
 		protected var _itemWidth:Number;
 		protected var _itemHeight:Number;
@@ -65,16 +65,16 @@ package com.larrio.controls.layouts
 		 * create a [ScrollLayout] object
 		 * @param	rowCount		每页显示的行数
 		 * @param	columnCount		每页显示的列数
-		 * @param	horizontalGap	水平方向间隔
-		 * @param	verticalGap		垂直方向间隔
+		 * @param	hgap			水平方向间隔
+		 * @param	vgap			垂直方向间隔
 		 */
-		public function ScrollLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
+		public function ScrollLayout(rowCount:int, columnCount:int = 1, hgap:int = 5, vgap:int = 5)
 		{	
 			_rowCount = rowCount;
 			_columnCount = columnCount;
 			
-			_horizontalGap = horizontalGap;
-			_verticalGap = verticalGap;
+			_hgap = hgap;
+			_vgap = vgap;
 			
 			init();
 		}
@@ -85,6 +85,8 @@ package com.larrio.controls.layouts
 		protected function init():void
 		{
 			addChild(_container = new Sprite());
+			
+			_scrollRect = new Rectangle();
 		}
 		
 		/**
@@ -123,8 +125,8 @@ package com.larrio.controls.layouts
 			
 			// DisplayObject.scrollRect
 			_scrollRect = new Rectangle();
-			_scrollRect.width = _columnCount * (_itemWidth + _horizontalGap) - _horizontalGap;
-			_scrollRect.height = _rowCount * (_itemHeight + _verticalGap) - _verticalGap;
+			_scrollRect.width = _columnCount * (_itemWidth + _hgap) - _hgap;
+			_scrollRect.height = _rowCount * (_itemHeight + _vgap) - _vgap;
 			
 			// 增强鼠标感应
 			graphics.clear();
@@ -378,6 +380,32 @@ package com.larrio.controls.layouts
 			this.dataProvider = _dataProvider;
 			
 			scrollTo(index);
+		}
+
+		/**
+		 * 设置竖向间隔
+		 */		
+		public function get vgap():int { return _vgap; }
+		public function set vgap(value:int):void
+		{
+			_vgap = value; 
+			_scrollRect.height = _rowCount * (_itemHeight + _vgap) - _vgap;
+			_container.scrollRect = _scrollRect;
+			
+			layoutUpdate();
+		}
+
+		/**
+		 * 设置横向间隔
+		 */		
+		public function get hgap():int { return _hgap; }
+		public function set hgap(value:int):void
+		{
+			_hgap = value; 
+			_scrollRect.width = _columnCount * (_itemWidth + _hgap) - _hgap;
+			_container.scrollRect = _scrollRect;
+			
+			layoutUpdate();
 		}
 	}
 

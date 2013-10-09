@@ -22,9 +22,9 @@ package com.larrio.controls.layouts
 		 * 构造函数
 		 * create a [VirticalDragLayout] object
 		 */
-		public function VirticalDragLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
+		public function VirticalDragLayout(rowCount:int, columnCount:int = 1, hgap:int = 5, vgap:int = 5)
 		{
-			super(rowCount, columnCount, horizontalGap, verticalGap);
+			super(rowCount, columnCount, hgap, vgap);
 			
 			_drag = new DragHelper(_container);
 		}
@@ -85,7 +85,7 @@ package com.larrio.controls.layouts
 		 */
 		private function notifyChange(position:Number):void
 		{
-			var targetValue:Number = position * 100 / (_itemHeight + _verticalGap) / (_lineCount - _rowCount);
+			var targetValue:Number = position * 100 / (_itemHeight + _vgap) / (_lineCount - _rowCount);
 			
 			if (targetValue < 0) targetValue = 0;
 			if (targetValue > 100) targetValue = 100;

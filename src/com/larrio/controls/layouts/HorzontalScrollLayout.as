@@ -14,12 +14,12 @@ package com.larrio.controls.layouts
 		 * create a [HorzontalScrollLayout] object
 		 * @param	rowCount		每页显示的行数
 		 * @param	columnCount		每页显示的列数
-		 * @param	horizontalGap	水平方向间隔
-		 * @param	verticalGap		垂直方向间隔
+		 * @param	hgap			水平方向间隔
+		 * @param	vgap			垂直方向间隔
 		 */
-		public function HorzontalScrollLayout(rowCount:int, columnCount:int = 1, horizontalGap:int = 5, verticalGap:int = 5)
+		public function HorzontalScrollLayout(rowCount:int, columnCount:int = 1, hgap:int = 5, vgap:int = 5)
 		{			
-			super(rowCount, columnCount, horizontalGap, verticalGap);
+			super(rowCount, columnCount, hgap, vgap);
 			
 			_horizontalMode = true;
 		}
@@ -30,8 +30,8 @@ package com.larrio.controls.layouts
 		override protected function scrollingRender():void
 		{		
 			// 开始渲染	
-			var position:Number = _value * (_lineCount - _columnCount) * (_itemWidth + _horizontalGap) / 100;
-			var columnIndex:Number = (position / (_itemWidth + _horizontalGap)) >> 0;
+			var position:Number = _value * (_lineCount - _columnCount) * (_itemWidth + _hgap) / 100;
+			var columnIndex:Number = (position / (_itemWidth + _hgap)) >> 0;
 			
 			var scrollingRight:Boolean = (position < _scrollRect.x);
 			
@@ -66,7 +66,7 @@ package com.larrio.controls.layouts
 				{
 					firstItem = _items[0];
 					lastItem = _items.pop() as RenderWrapper;
-					lastItem.x = firstItem.x - _itemWidth - _horizontalGap;
+					lastItem.x = firstItem.x - _itemWidth - _hgap;
 					
 					lastItem.scrolling = _scrolling;
 					lastItem.dataIndex = firstItem.dataIndex - 1;
@@ -81,7 +81,7 @@ package com.larrio.controls.layouts
 				{
 					lastItem = _items[_items.length - 1];
 					firstItem = _items.shift() as RenderWrapper;
-					firstItem.x = lastItem.x + _itemWidth + _horizontalGap;
+					firstItem.x = lastItem.x + _itemWidth + _hgap;
 					
 					firstItem.scrolling = _scrolling;
 					firstItem.dataIndex = lastItem.dataIndex + 1;
@@ -138,8 +138,8 @@ package com.larrio.controls.layouts
 						item.parent && item.parent.removeChild(item);
 					}
 					
-					item.y = j * item.height + j * _verticalGap;
-					item.x = i * item.width + i * _horizontalGap;
+					item.y = j * item.height + j * _vgap;
+					item.x = i * item.width + i * _hgap;
 					index ++;
 				}
 			}
