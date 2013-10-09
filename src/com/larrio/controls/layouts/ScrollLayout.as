@@ -38,7 +38,7 @@ package com.larrio.controls.layouts
 		protected var _dataProvider:Array;
 		protected var _itemRenderClass:Class;
 		
-		protected var _items:Array = null;
+		protected var _items:Array;
 		
 		protected var _lineIndex:int = 0;
 		protected var _lineCount:int = 0;
@@ -76,15 +76,29 @@ package com.larrio.controls.layouts
 			_horizontalGap = horizontalGap;
 			_verticalGap = verticalGap;
 			
+			init();
+		}
+		
+		/**
+		 * 初始化设置
+		 */		
+		protected function init():void
+		{
 			addChild(_container = new Sprite());
 		}
 		
 		/**
-		 * 初始化列表
+		 * 重置列表数据
 		 */
-		protected function initView():void
+		protected function resetView():void
 		{
-			_items = [];
+			var item:RenderWrapper;
+			while (_items && _items.length)
+			{
+				item = _items.pop();
+				item.parent && item.parent.removeChild(item);
+				item.data = null;
+			}
 			
 			if (_horizontalMode)
 			{
@@ -95,31 +109,39 @@ package com.larrio.controls.layouts
 				_itemCount = (_rowCount + 1) * _columnCount;
 			}
 			
-			var itemRender:RenderWrapper = null;
+			_items = [];
 			for (var i:int = 0; i < _itemCount; i++)
 			{
-				itemRender = new RenderWrapper(_itemRenderClass);
-				itemRender.index = i;
+				item = new RenderWrapper(_itemRenderClass);
+				item.index = i;
 				
-				_items.push(itemRender);
+				_items.push(item);
 			}
 			
-			_itemHeight = itemRender.height;
-			_itemWidth = itemRender.width;
+			_itemHeight = item.height;
+			_itemWidth = item.width;
 			
-			// scroll rect
+			// DisplayObject.scrollRect
 			_scrollRect = new Rectangle();
 			_scrollRect.width = _columnCount * (_itemWidth + _horizontalGap) - _horizontalGap;
 			_scrollRect.height = _rowCount * (_itemHeight + _verticalGap) - _verticalGap;
 			
-			// add transparent mouse interact area
-			var g:Graphics = this.graphics;
-			
-			g.beginFill(0xFF0000, 0);
-			g.drawRect(0, 0, _scrollRect.width, _scrollRect.height);
-			g.endFill();
+			// 增强鼠标感应
+			graphics.clear();
+			graphics.beginFill(0xFF0000, 0);
+			graphics.drawRect(0, 0, _scrollRect.width, _scrollRect.height);
+			graphics.endFill();
 			
 			_container.scrollRect = _scrollRect;
+		}
+		
+		/**
+		 * 刷新当前页面数据
+		 */		
+		public function refresh():void
+		{
+			_forceUpdate = true;
+			layoutUpdate();
 		}
 		
 		//-----------------------------------------------------------
@@ -214,10 +236,12 @@ package com.larrio.controls.layouts
 			
 			_lineIndex = Math.max(_lineIndex, 0);
 			
-			if (!_items)
+			if (!_items || !_items.length)
 			{
-				initView();
+				resetView();
 			}
+			
+			this.value = 0;
 		}
 		
 		/**
@@ -227,8 +251,17 @@ package com.larrio.controls.layouts
 		public function set itemRenderClass(value:Class):void 
 		{
 			_itemRenderClass = value;
-			
-			this.dataProvider = null;
+			if (_dataProvider)
+			{
+				_forceUpdate = true;
+				
+				resetView();
+				this.value = _value;
+			}
+			else
+			{
+				this.dataProvider = null;
+			}
 		}
 		
 		/**
@@ -301,6 +334,50 @@ package com.larrio.controls.layouts
 		public function set forceUpdate(value:Boolean):void 
 		{
 			_forceUpdate = value;
+		}
+
+		/**
+		 * 列表行数
+		 */		
+		public function get rowCount():int { return _rowCount; }
+		public function set rowCount(value:int):void
+		{
+			if (value == _rowCount) return;
+			
+			var index:uint = _lineIndex * _columnCount;
+			if (_horizontalMode)
+			{
+				index = _lineIndex * _rowCount;
+			}
+			
+			_rowCount = value;
+			
+			resetView();
+			this.dataProvider = _dataProvider;
+			
+			scrollTo(index);
+		}
+
+		/**
+		 * 布局列表列数
+		 */		
+		public function get columnCount():int { return _columnCount; }
+		public function set columnCount(value:int):void
+		{
+			if (value == _columnCount) return;
+			
+			var index:uint = _lineIndex * _columnCount;
+			if (_horizontalMode)
+			{
+				index = _lineIndex * _rowCount;
+			}
+			
+			_columnCount = value;
+			
+			resetView();
+			this.dataProvider = _dataProvider;
+			
+			scrollTo(index);
 		}
 	}
 

@@ -18,7 +18,7 @@ package com.larrio.controls.wrappers
 		
 		private var _scrolling:Boolean = false;
 		
-		private var _renderer:IRender = null;
+		private var _target:IRender = null;
 		
 		/**
 		 * 构造函数
@@ -27,14 +27,14 @@ package com.larrio.controls.wrappers
 		 */
 		public function RenderWrapper(RenderClass:Class)
 		{
-			_renderer = new RenderClass() as IRender;
-			if (_renderer is DisplayObject)
+			_target = new RenderClass() as IRender;
+			if (_target is DisplayObject)
 			{
-				addChild(_renderer as DisplayObject);
+				addChild(_target as DisplayObject);
 				
 				if (this.width == 0 || this.height == 0)
 				{
-					throw new ArgumentError(_renderer + "高度或者宽度为0，这样会导致布局控件的遮罩宽高计算错误！");
+					throw new ArgumentError(_target + "高度或者宽度为0，这样会导致布局控件的遮罩宽高计算错误！");
 				}
 			}
 			else
@@ -50,7 +50,7 @@ package com.larrio.controls.wrappers
 		public function set data(value:Object):void
 		{
 			_data = value;
-			_renderer.data = value;
+			_target.data = value;
 		}
 		
 		/**
@@ -74,17 +74,17 @@ package com.larrio.controls.wrappers
 		/**
 		 * 优先使用Renderer的高度
 		 */
-		override public function get height():Number { return DisplayObject(_renderer).height; }
+		override public function get height():Number { return DisplayObject(_target).height; }
 		
 		/**
 		 * 优先使用Renderer的宽度
 		 */
-		override public function get width():Number { return DisplayObject(_renderer).width; }
+		override public function get width():Number { return DisplayObject(_target).width; }
 		
 		/**
 		 * 渲染器实例对象
 		 */
-		public function get renderer():IRender { return _renderer; }
+		public function get target():IRender { return _target; }
 		
 		/**
 		 * 是否正在滚动

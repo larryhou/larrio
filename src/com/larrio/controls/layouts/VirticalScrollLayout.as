@@ -147,7 +147,7 @@ package com.larrio.controls.layouts
 		
 		/**
 		 * 滚动到水平方向指定数据位置
-		 * @param	dataIndex
+		 * @param	dataIndex	数据索引
 		 */
 		override public function scrollTo(dataIndex:int):void 
 		{
@@ -169,7 +169,6 @@ package com.larrio.controls.layouts
 		{
 			super.dataProvider = value;
 			this.value = 100 * (_lineIndex--) / (_lineCount - _rowCount);
-			
 		}
 	}
 }
