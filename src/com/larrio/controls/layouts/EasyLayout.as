@@ -98,6 +98,7 @@ package com.larrio.controls.layouts
 			}
 			
 			_scroller.lineCount = _layout.lineCount;
+			_scroller.value = _layout.value;
 		}
 		
 		/**
