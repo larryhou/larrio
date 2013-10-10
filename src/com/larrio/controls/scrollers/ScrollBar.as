@@ -283,12 +283,14 @@ package com.larrio.controls.scrollers
 			
 			dragRange.y = upRect.bottom >> 0;
 			dragRange.height = downRect.top - upRect.bottom;
+			if (!dragRange.height) dragRange.height = _track.height;
 			
 			var minValue:Number = _bar.minHeight;
 			var maxValue:Number = _bar.dragRect.height;
 			
 			var ratio:Number = (_lineCount - _pageCount) / (_pageCount * 10);
 			_bar.height = maxValue * (1 - ratio) + ratio * minValue >> 0;
+			
 			dragRange.height = dragRange.height - _bar.height + 1.0 >> 0;
 			
 			_bar.y = _bar.dragRect.y;
@@ -304,7 +306,7 @@ package com.larrio.controls.scrollers
 			var downRect:Rectangle = _downBtn? _downBtn.getBounds(_view) : new Rectangle();
 			
 			_track.height = value - upRect.height - downRect.height;
-			_downBtn.y = _track.y + _track.height;
+			if (_downBtn) _downBtn.y = _track.y + _track.height;
 			
 			this.lineCount = _lineCount;
 		}

@@ -1,6 +1,7 @@
 package
 {
 	import com.larrio.controls.layouts.EasyLayout;
+	import com.larrio.controls.scrollers.bar.BarView;
 	
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
@@ -25,9 +26,8 @@ package
 		 */
 		public function Main()
 		{
-			_layout = new EasyLayout(5, 3,5,5,false);
-			_layout.itemRenderClass = SimpleItemRender;
-			addChild(_layout.layout);
+			_layout = new EasyLayout(SimpleItemRender, 5, 3,5,5,false, new BarView());
+			addChild(_layout);
 			
 			var provider:Array = [];
 			while (provider.length < 100) provider.push({id:provider.length + 1});
@@ -44,25 +44,25 @@ package
 			{
 				case Keyboard.LEFT:
 				{
-					_layout.layout.column--;
+					_layout.column--;
 					break;
 				}
 					
 				case Keyboard.RIGHT:
 				{
-					_layout.layout.column++;
+					_layout.column++;
 					break;
 				}
 					
 				case Keyboard.UP:
 				{
-					_layout.layout.row++;
+					_layout.row++;
 					break;
 				}
 					
 				case Keyboard.DOWN:
 				{
-					_layout.layout.row--;
+					_layout.row--;
 					break;
 				}
 					

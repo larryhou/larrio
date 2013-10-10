@@ -80,18 +80,18 @@ package com.larrio.controls.layouts
 		 */
 		private function scrollerUpdate():void
 		{
-			var bounds:Rectangle = _scroller.view.getBounds(_scroller.view);
+			var bounds:Rectangle = _scroller.view.getBounds(this);
 			
 			if (_virtical)
 			{
-				_scroller.x = _layout.width - bounds.x;
+				_scroller.x = _layout.width - bounds.x + 1;
 				_scroller.height = _layout.height;
 				
 				_scroller.view.rotation = 0;
 			}
 			else
 			{
-				_scroller.y = _layout.height - bounds.y + bounds.width;
+				_scroller.y = _layout.height - bounds.y + bounds.width + 1;
 				_scroller.height = _layout.width;
 				
 				_scroller.view.rotation = -90;
