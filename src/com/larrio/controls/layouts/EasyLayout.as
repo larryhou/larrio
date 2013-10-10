@@ -162,8 +162,8 @@ package com.larrio.controls.layouts
 		public function set dataProvider(value:Array):void 
 		{
 			_layout.dataProvider = value || [];
-			_scroller.lineCount = _layout.lineCount;
 			
+			scrollerUpdate();
 			refresh();
 		}
 		
