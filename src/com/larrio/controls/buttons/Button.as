@@ -1,8 +1,6 @@
 package com.larrio.controls.buttons 
 {
-	
 	import com.larrio.controls.wrappers.ButtonWrapper;
-	
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
 	import flash.display.MovieClip;

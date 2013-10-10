@@ -115,9 +115,10 @@ package com.larrio.controls.layouts
 			for (var i:int = 0; i < _itemCount; i++)
 			{
 				item = new RenderWrapper(_itemRenderClass);
+				item.visible = false;
 				item.index = i;
 				
-				_items.push(item);
+				_items.push(_container.addChild(item));
 			}
 			
 			_itemHeight = item.height;
@@ -242,8 +243,6 @@ package com.larrio.controls.layouts
 			{
 				resetView();
 			}
-			
-			this.value = 0;
 		}
 		
 		/**

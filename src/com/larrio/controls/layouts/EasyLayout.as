@@ -1,33 +1,37 @@
 package com.larrio.controls.layouts 
 {
-	import com.larrio.controls.scrollers.bar.BarView;
 	import com.larrio.controls.interfaces.IComponent;
-	import com.larrio.controls.interfaces.IScroller;
 	import com.larrio.controls.scrollers.ScrollBar;
-	
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
+	import flash.geom.Rectangle;
+	
 	
 	/**
 	 * 常用布局控制类
 	 * @author larryhou
 	 * @createTime 2012/5/29 12:03
 	 */
-	public class EasyLayout extends EventDispatcher implements IComponent
+	public class EasyLayout extends Sprite implements IComponent
 	{
-		private var _scroller:IScroller;
+		private var _scroller:ScrollBar;
 		private var _layout:ScrollLayout;
 		
 		private var _enabled:Boolean;
 		private var _virtical:Boolean;
 		
+		private var _row:uint;
+		private var _column:uint;
+		
+		private var _position:Number;
+		
 		/**
 		 * 构造函数
 		 * create a [EasyLayout] object
 		 */
-		public function EasyLayout(row:int, column:int = 1, hgap:Number = 5, vgap:Number = 5, virtical:Boolean = true, scroller:IScroller = null) 
+		public function EasyLayout(renderClass:Class, row:int, column:int = 1, hgap:Number = 5, vgap:Number = 5, virtical:Boolean = true, scrollerView:MovieClip = null) 
 		{
-			_scroller = scroller;
 			_virtical = virtical;
 			
 			if (_virtical)
@@ -39,16 +43,18 @@ package com.larrio.controls.layouts
 				_layout = new HorzontalScrollLayout(row, column, hgap, vgap);
 			}
 			
-			if (!_scroller) 
-			{
-				_scroller = new ScrollBar(new BarView(), _virtical? row : column);
-				_layout.addChild((_scroller as ScrollBar).view);
-			}
+			_layout.itemRenderClass = renderClass;
 			
-			if (_scroller is ScrollBar)
-			{
-				(_scroller as ScrollBar).wheelArea = _layout;
-			}
+			_scroller = new ScrollBar(scrollerView, _virtical? row : column);
+			_scroller.wheelArea = _layout;
+			_scroller.bar.minHeight = 60;
+			
+			addChild((_scroller as ScrollBar).view);
+			scrollerUpdate();
+			
+			addChild(_layout);
+			
+			this.enabled = true;
 		}
 		
 		/**
@@ -58,46 +64,40 @@ package com.larrio.controls.layouts
 		public function scrollTo(dataIndex:int):void
 		{
 			_layout.scrollTo(dataIndex);
-			
 			_scroller.value = _layout.value;
+		}
+		
+		/**
+		 * 强制刷新当前页面数据
+		 */
+		public function refresh():void
+		{
+			_layout.refresh();
 		}
 		
 		/**
 		 * 刷新显示
 		 */
-		private function refresh():void
+		private function scrollerUpdate():void
 		{
-			if(_scroller is ScrollBar && (_scroller as ScrollBar).view is BarView)
+			var bounds:Rectangle = _scroller.view.getBounds(_scroller.view);
+			
+			if (_virtical)
 			{
-				var bar:ScrollBar = _scroller as ScrollBar;
-				if(_virtical)
-				{
-					bar.view.rotation = 0;
-					bar.view.x = _layout.width;
-					bar.height = _layout.height;
-					
-					if (bar.view is BarView)
-					{
-						bar.view.y = 1;
-						bar.view.x += 2;
-						bar.view.height -= 2;
-					}
-				}
-				else
-				{
-					bar.view.y = _layout.height;
-					bar.height = _layout.width;
-					
-					if (bar.view is BarView)
-					{
-						bar.view.x = 1;
-						bar.view.y += 2 + bar.width;
-						bar.height -= 2;
-					}
-					
-					bar.view.rotation = -90;
-				}
+				_scroller.x = _layout.width - bounds.x;
+				_scroller.height = _layout.height;
+				
+				_scroller.view.rotation = 0;
 			}
+			else
+			{
+				_scroller.y = _layout.height - bounds.y + bounds.width;
+				_scroller.height = _layout.width;
+				
+				_scroller.view.rotation = -90;
+			}
+			
+			_scroller.lineCount = _layout.lineCount;
 		}
 		
 		/**
@@ -132,13 +132,16 @@ package com.larrio.controls.layouts
 			{
 				_scroller.value = _layout.value;
 			}
+			
+			_position = _layout.value;
 		}
 		
 		/* INTERFACE com.qzone.corelib.controls.interfaces.IController */
 		// getter & setter
 		//*************************************************
 		/**
-		 * 激活控件
+		 * 控件是否被激活
+		 * @default true
 		 */
 		public function get enabled():Boolean { return _enabled; }
 		public function set enabled(value:Boolean):void 
@@ -166,7 +169,7 @@ package com.larrio.controls.layouts
 		/**
 		 * 滚动控件
 		 */
-		public function get scroller():IScroller { return _scroller; }
+		public function get scroller():ScrollBar { return _scroller; }
 		
 		/**
 		 * 布局控件
@@ -179,7 +182,7 @@ package com.larrio.controls.layouts
 		public function get itemRenderClass():Class { return _layout.itemRenderClass; }
 		public function set itemRenderClass(value:Class):void 
 		{
-			_layout.itemRenderClass = value;
+			_layout.itemRenderClass = value; scrollerUpdate();
 		}
 		
 		/**
@@ -187,6 +190,43 @@ package com.larrio.controls.layouts
 		 */
 		public function get virtical():Boolean { return _virtical; }
 		
+		/**
+		 * 滚动列表列数
+		 */
+		public function get column():uint { return _layout.column; }
+		public function set column(value:uint):void 
+		{
+			_layout.column = value; scrollerUpdate();
+		}
+		
+		/**
+		 * 滚动列表行数
+		 */
+		public function get row():uint { return _layout.row; }
+		public function set row(value:uint):void 
+		{
+			_layout.row = value; scrollerUpdate();
+		}
+		
+		/**
+		 * 滚动条位置
+		 */
+		public function get position():Number { return _position; }
+		public function set position(value:Number):void 
+		{
+			_position = isNaN(value)? 0 : Math.max(0, Math.min(value, 100));
+			
+			_layout.forceUpdate = true;
+			_layout.value = _position;
+			
+			_scroller.value = _position;
+		}
+		
+		/**
+		 * 使用列表宽高
+		 */
+		override public function get width():Number { return _layout.width; }
+		override public function get height():Number { return _layout.height; }
 	}
 
 }

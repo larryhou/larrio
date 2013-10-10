@@ -38,7 +38,10 @@ package com.larrio.controls.layouts
 			_scrollRect.y = position;
 			_container.scrollRect = _scrollRect;
 			
-			if (_lineIndex == rowIndex) return;
+			if (_lineIndex == rowIndex)
+			{
+				_forceUpdate && layoutUpdate(); return;
+			}
 			
 			if (Math.abs(_lineIndex - rowIndex) > 1)
 			{
@@ -57,6 +60,8 @@ package com.larrio.controls.layouts
 			var lastItem:RenderWrapper;
 			var firstItem:RenderWrapper;
 			
+			var i:uint, j:uint;
+			
 			var index:int;
 			if (scrollingDown)
 			{
@@ -64,11 +69,16 @@ package com.larrio.controls.layouts
 				{
 					firstItem = _items[0];
 					lastItem = _items.pop() as RenderWrapper;
-					lastItem.y = firstItem.y - _itemHeight - _vgap;
 					
 					lastItem.scrolling = _scrolling;
 					lastItem.dataIndex = firstItem.dataIndex - 1;
 					lastItem.data = _dataProvider[lastItem.dataIndex];
+					
+					i = lastItem.dataIndex / _column >> 0;
+					j = lastItem.dataIndex % _column;
+					lastItem.x = j * lastItem.width + j * _hgap;
+					lastItem.y = i * lastItem.height + i * _vgap;
+					lastItem.visible = lastItem.data != null;
 					
 					_items.unshift(lastItem);
 				}
@@ -79,17 +89,22 @@ package com.larrio.controls.layouts
 				{
 					lastItem = _items[_items.length - 1];
 					firstItem = _items.shift() as RenderWrapper;
-					firstItem.y = lastItem.y + _itemHeight + _vgap;
 					
 					firstItem.scrolling = _scrolling;
 					firstItem.dataIndex = lastItem.dataIndex + 1;
 					firstItem.data = _dataProvider[firstItem.dataIndex];
 					
+					i = firstItem.dataIndex / _column >> 0;
+					j = firstItem.dataIndex % _column;
+					firstItem.x = j * firstItem.width + j * _hgap;
+					firstItem.y = i * firstItem.height + i * _vgap;
+					firstItem.visible = firstItem.data != null;
+					
 					_items.push(firstItem);
 				}
 			}
 			
-			super.swapItemOrder(scrollingDown);
+			_forceUpdate && super.swapItemOrder(scrollingDown);
 		}
 		
 		/**
@@ -98,12 +113,7 @@ package com.larrio.controls.layouts
 		override protected function layoutUpdate():void
 		{
 			var index:int, dataIndex:int;
-			var data:Object, item:RenderWrapper;
-			
-			if (_lineIndex == 0)
-			{
-				_scrollRect.y = 0; _container.scrollRect = _scrollRect;
-			}
+			var data:Object, item:RenderWrapper;			
 			
 			for (var i:int = _lineIndex; i < _lineIndex + _row + 1; i++)
 			{
@@ -117,24 +127,13 @@ package com.larrio.controls.layouts
 					
 					if (_forceUpdate)
 					{
-						item.dataIndex = dataIndex;						
+						item.dataIndex = dataIndex;
 						item.scrolling = _scrolling;
 						
 						item.data = data;
 					}
 					
-					// check
-					if (data)
-					{
-						if(item.parent != _container)
-						{
-							_container.addChild(item);
-						}
-					}
-					else
-					{
-						item.parent && item.parent.removeChild(item);
-					}
+					item.visible = data != null;
 					
 					item.x = j * item.width + j * _hgap;
 					item.y = i * item.height + i * _vgap;
@@ -168,7 +167,7 @@ package com.larrio.controls.layouts
 		override public function set dataProvider(value:Array):void 
 		{
 			super.dataProvider = value;
-			this.value = 100 * (_lineIndex--) / (_lineCount - _row);
+			this.value = 100 * _lineIndex / (_lineCount - _row);
 		}
 	}
 }

@@ -224,6 +224,17 @@ package com.larrio.controls.scrollers
 					if (targetY < _view.mouseY) return;
 				}
 			}
+			else
+			{
+				if (_direction == 1)
+				{
+					if (targetY > _bar.dragRect.bottom) return;
+				}
+				else
+				{
+					if (targetY < _bar.dragRect.top) return;
+				}
+			}
 			
 			_bar.y = targetY;
 			
@@ -257,32 +268,28 @@ package com.larrio.controls.scrollers
 			
 			if (_lineCount <= _pageCount)
 			{
-				_bar.visible = this.enabled = false; return;
+				_view.visible = this.enabled = false; return;
 			}
 			
-			_bar.visible = this.enabled = true;
+			_view.visible = this.enabled = true;
 			
-			var _rect:Rectangle;
-			var _bounds:Rectangle = _track.getBounds(_view);
+			var dragRange:Rectangle = _bar.dragRect;
 			
-			var _dragRect:Rectangle = _bar.dragRect;
+			dragRange.width = 0;
+			dragRange.x = _bar.x;
 			
-			_dragRect.width = 0;
-			_dragRect.x = _bar.x;
+			var upRect:Rectangle = _upBtn? _upBtn.getBounds(_view) : new Rectangle();
+			var downRect:Rectangle = _downBtn? _downBtn.getBounds(_view) : new Rectangle();
 			
-			_rect = _upBtn? _upBtn.getBounds(_view) : new Rectangle();
-			_dragRect.y = _bounds.y + _rect.height >> 0;
-			_bounds.height -= _rect.height;
-			
-			_rect = _downBtn? _downBtn.getBounds(_view) : new Rectangle();
-			_dragRect.height = _bounds.height - _rect.height;
+			dragRange.y = upRect.bottom >> 0;
+			dragRange.height = downRect.top - upRect.bottom;
 			
 			var minValue:Number = _bar.minHeight;
 			var maxValue:Number = _bar.dragRect.height;
 			
 			var ratio:Number = (_lineCount - _pageCount) / (_pageCount * 10);
 			_bar.height = maxValue * (1 - ratio) + ratio * minValue >> 0;
-			_dragRect.height = _dragRect.height - _bar.height + 1.0 >> 0;
+			dragRange.height = dragRange.height - _bar.height + 1.0 >> 0;
 			
 			_bar.y = _bar.dragRect.y;
 		}
@@ -293,25 +300,14 @@ package com.larrio.controls.scrollers
 		public function get height():Number { return _view.height; }
 		public function set height(value:Number):void 
 		{
-			_track.height = value;
+			var upRect:Rectangle = _upBtn? _upBtn.getBounds(_view) : new Rectangle();
+			var downRect:Rectangle = _downBtn? _downBtn.getBounds(_view) : new Rectangle();
 			
-			var _rect:Rectangle;
-			var _bounds:Rectangle = _track.getBounds(_view);
-			
-			if(_upBtn)
-			{
-				_rect = _upBtn.getBounds(_view);
-				_upBtn.y += _bounds.y - _rect.y;
-			}
-			
-			if(_downBtn)
-			{
-				_rect = _downBtn.getBounds(_view);
-				_downBtn.y += (_bounds.y + _bounds.height) - (_rect.y + _rect.height);
-			}
+			_track.height = value - upRect.height - downRect.height;
+			_downBtn.y = _track.y + _track.height;
 			
 			this.lineCount = _lineCount;
-		}		
+		}
 		
 		/**
 		 * 横坐标
