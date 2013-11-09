@@ -30,7 +30,7 @@ package com.larrio.controls.layouts
 		override protected function scrollingRender():void
 		{		
 			// 开始渲染	
-			var position:Number = _value * (_lineCount - _column) * (_itemWidth + _hgap) / 100;
+			var position:Number = _value * (Math.max(_lineCount - _column, 0)) * (_itemWidth + _hgap) / 100;
 			var columnIndex:Number = (position / (_itemWidth + _hgap)) >> 0;
 			
 			var scrollingRight:Boolean = (position < _scrollRect.x);

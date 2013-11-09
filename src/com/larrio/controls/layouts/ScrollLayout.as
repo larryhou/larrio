@@ -287,26 +287,7 @@ package com.larrio.controls.layouts
 			if (_value == value && !_forceUpdate) return;
 			
 			_value = value;
-			
-			var flag:Boolean = false;
-			if (_horizontalMode)
-			{
-				flag = (_lineCount <= _column);
-			}
-			else
-			{
-				flag = (_lineCount <= _row);
-			}
-			
-			if (flag)
-			{
-				_lineIndex = 0;
-				layoutUpdate();
-			}
-			else
-			{
-				scrollingRender();
-			}
+			scrollingRender();
 		}
 		
 		/**
