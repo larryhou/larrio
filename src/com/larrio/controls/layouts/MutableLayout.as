@@ -325,18 +325,7 @@ package com.larrio.controls.layouts
 					flag = true;
 				}
 				
-				if (flag)
-				{
-					var item:RenderWrapper;
-					while (_items.length)
-					{
-						item = _items.pop();
-						item.parent && item.parent.removeChild(item);
-						_recycleItems.push(item);
-					}
-					
-					makeSafeLayout();
-				}
+				flag && makeSafeLayout();
 			}
 		}
 		
