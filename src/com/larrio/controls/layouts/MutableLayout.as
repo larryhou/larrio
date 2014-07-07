@@ -67,15 +67,25 @@ package com.larrio.controls.layouts
 		 */
 		private function resetView():void
 		{
-			if (!_rememberPosition)
+			if (_dataProvider.length)
 			{
-				_viewport.y = 0;
-				_container.scrollRect = _viewport;
-				_value = 0;
+				if (!_rememberPosition)
+				{
+					_viewport.y = 0;
+					_container.scrollRect = _viewport;
+					_value = 0;
+				}	
+				
+				var index:int = locateItemAt(_viewport.y);
+				fillUpLayout(Math.max(0, index));
 			}
-			
-			var index:int = locateItemAt(_viewport.y);
-			fillUpLayout(Math.max(0, index));
+			else
+			{
+				while (_items.length)
+				{
+					reclaimItem(_items.pop());
+				}
+			}
 		}
 		
 		/**
@@ -116,13 +126,25 @@ package com.larrio.controls.layouts
 				
 			} while (position - _viewport.y < _viewport.height && index < _dataProvider.length)
 			
-			while (index < _items.length)
+			while (viewIndex < _items.length)
 			{
-				item = _items.pop();
-				item.parent && item.parent.removeChild(item);
-				
-				_recycleItems.push(item);
+				reclaimItem(_items.pop());
 			}
+		}
+		
+		/**
+		 * 回收复用渲染器项目
+		 * @param	item	渲染器项目
+		 */
+		private function reclaimItem(item:RenderWrapper):RenderWrapper
+		{
+			item.parent && item.parent.removeChild(item);
+			//if (_recycleItems.indexOf(item) < 0)
+			//{
+				_recycleItems.push(item);
+			//}
+			
+			return item;
 		}
 		
 		/**
@@ -147,7 +169,7 @@ package com.larrio.controls.layouts
 					item = _items[_items.length - 1];
 					if (item.y - _gap - _viewport.y > _viewport.height)
 					{
-						_recycleItems.push(_items.pop());
+						reclaimItem(_items.pop());
 					}
 					else
 					{
@@ -177,7 +199,7 @@ package com.larrio.controls.layouts
 					item = _items[0];
 					if (item.y + item.height - _viewport.y < 0)
 					{
-						_recycleItems.push(_items.shift());
+						reclaimItem(_items.shift());
 					}
 					else
 					{
@@ -299,8 +321,13 @@ package com.larrio.controls.layouts
 		public function getItemPosition(dataIndex:uint, appearAtBottom:Boolean = true):Number
 		{
 			dataIndex = Math.min(dataIndex, _dataProvider.length - 1);
-			var range:HeightRange = _ranges[_dataProvider[dataIndex]] as HeightRange;
-			return appearAtBottom? (range.upper - _viewport.height) : range.lower;
+			if (_dataProvider.length)
+			{
+				var range:HeightRange = _ranges[_dataProvider[dataIndex]] as HeightRange;
+				return appearAtBottom? (range.upper - _viewport.height) : range.lower;
+			}
+			
+			return 0;
 		}
 		
 		/**
@@ -541,6 +568,11 @@ package com.larrio.controls.layouts
 		 * 当前列表是否处于可滚动状态
 		 */
 		public function get scrollable():Boolean { return _scrollable; }
+		
+		/**
+		 * 当前页显示渲染器个数
+		 */
+		public function get pageCount():uint { return _items.length; }
 		
 		/**
 		 * 自动记忆位置
